@@ -5,9 +5,15 @@ const connectDB = require('./config/db');
 // Connect to DB
 connectDB();
 
+// Init middleware
+app.use(express.json());
+
 app.get('/', (req, res) => {
-    res.json({ msg: 'connected' })
+    res.json({ msg: "Welcome to the Contact Keeper API" })
 });
+
+// Define Routes
+app.use('/api/users', require('./routes/users'));
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {

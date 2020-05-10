@@ -5,12 +5,12 @@ Inspired by Dave Ramsey and his philosophy on the idea of budgeting down to ever
 
 #### Todo:
 1. Create and connect to a db
-2. Create a front-end for sign-up & log-in
-3. Set up authentication/authorization and connect to db
-3. Test that each user is getting the right data
-4. Create a full functioning front end
-5. Pull in right data for each user pt.2
-6. Use charts to make it visually appealing
+2. Set up authentication/authorization and connect to db
+3. Create a front-end for sign-up & log-in
+4. Test that each user is getting the right data
+5. Create a full functioning front end
+6. Pull in right data for each user pt.2
+7. Use charts to make it visually appealing
 
 _Bonus:_
 Write tests for a 100% coverage rate
