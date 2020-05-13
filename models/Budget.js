@@ -18,7 +18,7 @@ const BudgetSchema = mongoose.Schema({
         play: Number
     },
     investments: {
-        '401k': Number,
+        t401k: Number,
         hsa: Number,
         roth: Number,
         robinhood: Number
