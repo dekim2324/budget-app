@@ -57,21 +57,20 @@ router.put('/:id', auth, async (req, res) => {
     } = req.body;
 
     // Build budget object
-    const budgetFields = {};
-    if(income) budgetFields.income = income;
-    if(rent) budgetFields.expenses.rent = rent;
-    if(car) budgetFields.expenses.car = car;
-    if(gas) budgetFields.expenses.gas = gas;
-    if(subscriptions) budgetFields.expenses.subscriptions = subscriptions;
-    if(groceries) budgetFields.expenses.groceries = groceries;
-    if(play) budgetFields.expenses.play = play;
-    if(t401k) budgetFields.investments.t401k = t401k;
-    if(hsa) budgetFields.investments.hsa = hsa;
-    if(roth) budgetFields.investments.roth = roth;
-    if(robinhood) budgetFields.investments.robinhood = robinhood;
+    // const budgetFields = {};
+    // if(income) budgetFields.income = income;
+    // if(rent) budgetFields.expenses = rent;
+    // if(car) budgetFields.expenses.car = car;
+    // if(gas) budgetFields.expenses.gas = gas;
+    // if(subscriptions) budgetFields.expenses.subscriptions = subscriptions;
+    // if(groceries) budgetFields.expenses.groceries = groceries;
+    // if(play) budgetFields.expenses.play = play;
+    // if(t401k) budgetFields.investments.t401k = t401k;
+    // if(hsa) budgetFields.investments.hsa = hsa;
+    // if(roth) budgetFields.investments.roth = roth;
+    // if(robinhood) budgetFields.investments.robinhood = robinhood;
 
     try {
-        console.log(gas)
         let budget = await Budget.findById(req.params.id);
         console.log(req.params.id);
         if(!budget) return res.status(404).json({ msg: 'Budget not found' });
@@ -81,11 +80,26 @@ router.put('/:id', auth, async (req, res) => {
             return res.status(401).json({ msg: 'Not authorized' });
         };
 
-        budget = await Budget.findOneAndUpdate(req.params.id, 
-            { $set: budgetFields },
+        let changedBudget = JSON.parse(JSON.stringify(budget));
+        console.log('before changed', changedBudget);
+        if(income) changedBudget.income = income;
+        if(rent) changedBudget.expenses.rent = rent;
+        if(car) changedBudget.expenses.car = car;
+        if(gas) changedBudget.expenses.gas = gas;
+        if(subscriptions) changedBudget.expenses.subscriptions = subscriptions;
+        if(groceries) changedBudget.expenses.groceries = groceries;
+        if(play) changedBudget.expenses.play = play;
+        if(t401k) changedBudget.investments.t401k = t401k;
+        if(hsa) changedBudget.investments.hsa = hsa;
+        if(roth) changedBudget.investments.roth = roth;
+        if(robinhood) changedBudget.investments.robinhood = robinhood;
+        console.log('here is the changed', changedBudget);
+
+        let newBudget = await Budget.findOneAndUpdate(req.params.id, 
+            { $set: changedBudget },
             { new: true }
         );
-        res.json(budget);
+        res.json(newBudget);
 
     } catch (err) {
         console.error(err.message);
