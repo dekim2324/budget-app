@@ -46,7 +46,7 @@ router.post('/', auth, async (req, res) => {
     };
 });
 
-// @route   PUT api/budget
+// @route   PUT api/budget/:id
 // @desc    Update budget
 // @access  Private
 router.put('/:id', auth, async (req, res) => {
@@ -56,23 +56,8 @@ router.put('/:id', auth, async (req, res) => {
         t401k, hsa, roth, robinhood
     } = req.body;
 
-    // Build budget object
-    // const budgetFields = {};
-    // if(income) budgetFields.income = income;
-    // if(rent) budgetFields.expenses = rent;
-    // if(car) budgetFields.expenses.car = car;
-    // if(gas) budgetFields.expenses.gas = gas;
-    // if(subscriptions) budgetFields.expenses.subscriptions = subscriptions;
-    // if(groceries) budgetFields.expenses.groceries = groceries;
-    // if(play) budgetFields.expenses.play = play;
-    // if(t401k) budgetFields.investments.t401k = t401k;
-    // if(hsa) budgetFields.investments.hsa = hsa;
-    // if(roth) budgetFields.investments.roth = roth;
-    // if(robinhood) budgetFields.investments.robinhood = robinhood;
-
     try {
         let budget = await Budget.findById(req.params.id);
-        console.log(req.params.id);
         if(!budget) return res.status(404).json({ msg: 'Budget not found' });
 
         // make sure user owns budget
@@ -81,7 +66,7 @@ router.put('/:id', auth, async (req, res) => {
         };
 
         let changedBudget = JSON.parse(JSON.stringify(budget));
-        console.log('before changed', changedBudget);
+        
         if(income) changedBudget.income = income;
         if(rent) changedBudget.expenses.rent = rent;
         if(car) changedBudget.expenses.car = car;
@@ -93,7 +78,6 @@ router.put('/:id', auth, async (req, res) => {
         if(hsa) changedBudget.investments.hsa = hsa;
         if(roth) changedBudget.investments.roth = roth;
         if(robinhood) changedBudget.investments.robinhood = robinhood;
-        console.log('here is the changed', changedBudget);
 
         let newBudget = await Budget.findOneAndUpdate(req.params.id, 
             { $set: changedBudget },
@@ -107,5 +91,26 @@ router.put('/:id', auth, async (req, res) => {
     };
 })
 
+// @route   DELETE api/budget/:id
+// @desc    Delete contact
+// @access  Private
+router.delete('/:id', auth, async (req, res) => {
+    try {
+        let budget = await Budget.findById(req.params.id);
+        if(!budget) return res.status(404).json({ msg: 'Budget not found' });
+
+        // make sure user owns budget
+        if(budget.user.toString() !== req.user.id) {
+            return res.status(401).json({ msg: 'Not authorized' });
+        };
+
+        await Budget.findByIdAndRemove(req.params.id);
+        res.json({ msg: 'Contact Removed' });
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    };
+})
 
 module.exports = router;
